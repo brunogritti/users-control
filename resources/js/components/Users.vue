@@ -2,12 +2,13 @@
 <div class="form">
     <p class="mt-3">Usuários:</p>
     <input type="text" v-model="new_user" placeholder="Insira um usuário">
+    <button class="btn btn-primary text-white" @click="submitUser">Cadastrar</button>
     <ul>
         <li v-for="user in users" :key="user">
-            {{ user }}
+            {{ user.name }}
+            <button class="btn btn-danger text-white" @click="removeUser(user.id)">Remover</button>
         </li>
     </ul>
-    <button class="btn btn-primary text-white" @click="exportPDF">Cadastrar</button>
 </div>
 </template>
 
@@ -26,29 +27,29 @@ export default {
 
     methods: {
         fetchUsers() {
-            axios.get('/users')
-            .then(response => this.users = response.data.collection)
+            axios.get('/json/users')
+            .then(response => this.users = response.data)
             .catch(error => {});
         },
 
         submitUser() {
-            axios.get('/submit-user', { params: {
-                user: this.user
+            axios.get('/json/submit-user', { params: {
+                user: this.new_user
             }})
             .then(response => {
-                alert(response.data.collection);
+                this.fetchUsers()
             })
             .catch(error => {
                 alert(error)
             });
         },
 
-        removeUser() {
-            axios.get('/remove-user', { params: {
-                user: this.user
+        removeUser(user_id) {
+            axios.get('/json/remove-user', { params: {
+                user_id: user_id
             }})
             .then(response => {
-                alert(response.data.collection);
+                this.fetchUsers()
             })
             .catch(error => {
                 alert(error)

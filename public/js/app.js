@@ -1858,6 +1858,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -1872,28 +1873,32 @@ __webpack_require__.r(__webpack_exports__);
     fetchUsers: function fetchUsers() {
       var _this = this;
 
-      axios.get('/users').then(function (response) {
-        return _this.users = response.data.collection;
+      axios.get('/json/users').then(function (response) {
+        return _this.users = response.data;
       })["catch"](function (error) {});
     },
     submitUser: function submitUser() {
-      axios.get('/submit-user', {
+      var _this2 = this;
+
+      axios.get('/json/submit-user', {
         params: {
-          user: this.user
+          user: this.new_user
         }
       }).then(function (response) {
-        alert(response.data.collection);
+        _this2.fetchUsers();
       })["catch"](function (error) {
         alert(error);
       });
     },
-    removeUser: function removeUser() {
-      axios.get('/remove-user', {
+    removeUser: function removeUser(user_id) {
+      var _this3 = this;
+
+      axios.get('/json/remove-user', {
         params: {
-          user: this.user
+          user_id: user_id
         }
       }).then(function (response) {
-        alert(response.data.collection);
+        _this3.fetchUsers();
       })["catch"](function (error) {
         alert(error);
       });
@@ -19609,22 +19614,34 @@ var render = function() {
     }),
     _vm._v(" "),
     _c(
-      "ul",
-      _vm._l(_vm.users, function(user) {
-        return _c("li", { key: user }, [
-          _vm._v("\n            " + _vm._s(user) + "\n        ")
-        ])
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c(
       "button",
       {
         staticClass: "btn btn-primary text-white",
-        on: { click: _vm.exportPDF }
+        on: { click: _vm.submitUser }
       },
       [_vm._v("Cadastrar")]
+    ),
+    _vm._v(" "),
+    _c(
+      "ul",
+      _vm._l(_vm.users, function(user) {
+        return _c("li", { key: user }, [
+          _vm._v("\n            " + _vm._s(user.name) + "\n            "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-danger text-white",
+              on: {
+                click: function($event) {
+                  return _vm.removeUser(user.id)
+                }
+              }
+            },
+            [_vm._v("Remover")]
+          )
+        ])
+      }),
+      0
     )
   ])
 }
